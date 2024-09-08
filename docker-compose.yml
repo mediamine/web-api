@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  web-api:
+    image: mediamine/web-api:latest
+    container_name: mediamine-web-api
+    ports:
+      - '3002:3002'
+    volumes:
+      - ./certs/:/etc/nestjs/ssl
+      - ./logs/:/var/logs/nestjs/
+    restart: always
