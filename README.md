@@ -43,7 +43,7 @@ $ yarn start:dev
 $ yarn start:prod
 ```
 
-# docker image / container
+## docker image / container
 
 ```
 docker build -t mediamine/web-api .

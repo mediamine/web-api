@@ -10,14 +10,17 @@ BigIntPrototype.toJSON = function () {
   return this.toString();
 };
 
+// to be used later to trigger an https server if required
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const httpsOptions = {
+  key: fs.readFileSync('./certs/cert-key.pem'),
+  cert: fs.readFileSync('./certs/cert.pem')
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: { origin: process.env.MEDIAMINE_UI_HOSTNAME },
-    bufferLogs: true,
-    httpsOptions: {
-      key: fs.readFileSync('./certs/cert-key.pem'),
-      cert: fs.readFileSync('./certs/cert.pem')
-    }
+    bufferLogs: true
   });
 
   app.useLogger(new WinstonLoggerService());
