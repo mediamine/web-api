@@ -1,4 +1,4 @@
 export const DEFAULT_PAGE_SIZE = 'DEFAULT_PAGE_SIZE';
-export const DEFAULT_PAGE_SIZE_VALUE = '25';
+export const DEFAULT_PAGE_SIZE_VALUE = '100';
 
 export const ZEROBOUNCE_API_KEY = 'ZEROBOUNCE_API_KEY';

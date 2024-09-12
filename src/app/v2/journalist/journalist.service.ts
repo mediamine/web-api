@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import converter from 'json-2-csv';
+import { json2csv } from 'json-2-csv';
 import { DateTime } from 'luxon';
 import { PublicationMediaType } from 'src/app/v1/publication-media-type/entities/publication-media-type.entity';
 import { PublicationTag } from 'src/app/v1/publication-tier/entities/publication-tag.entity';
@@ -831,7 +831,7 @@ export class JournalistService {
 
     // TODO: add a log for more than 200 count of exported rows
 
-    const resp = await converter.json2csv(
+    const resp = await json2csv(
       journalists?.map((j) => ({ ...j, p: j.publications })),
       {
         keys: [
