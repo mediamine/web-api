@@ -12,12 +12,12 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-  
 # Bundle app source
 COPY . .
 
-# Copy the .env and .env.development files
+# Copy the .env and .env.prod files
 COPY .env ./
+COPY .env.prod ./
 
 RUN yarn prisma:generate
 RUN yarn prisma:generate:mediamine

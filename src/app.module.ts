@@ -21,7 +21,11 @@ import { WinstonLoggerModule, WinstonLoggerService } from './logger';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, cache: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      envFilePath: ['.env', '.env.dev', '.env.prod']
+    }),
     PublicationMediaTypeModule,
     PublicationTierModule,
     PublicationModule,
