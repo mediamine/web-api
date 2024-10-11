@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   web-api:
     image: mediamine/web-api:latest
@@ -6,6 +5,5 @@ services:
     ports:
       - '3002:3002'
     volumes:
-      - ./certs/:/etc/nestjs/ssl
       - ./logs/:/var/logs/nestjs/
     restart: always

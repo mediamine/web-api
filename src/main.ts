@@ -1,20 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
 import { AppModule } from './app.module';
 import { WinstonLoggerService } from './logger/winston/winston-logger.service';
+
+// TODO: to be used later to trigger an https server if required
+// import * as fs from 'fs';
+// const httpsOptions = {
+//   key: fs.readFileSync('./certs/cert-key.pem'),
+//   cert: fs.readFileSync('./certs/cert.pem')
+// };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const BigIntPrototype: BigInt & { toJSON?: () => string } = BigInt.prototype;
 BigIntPrototype.toJSON = function () {
   return this.toString();
-};
-
-// to be used later to trigger an https server if required
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const httpsOptions = {
-  key: fs.readFileSync('./certs/cert-key.pem'),
-  cert: fs.readFileSync('./certs/cert.pem')
 };
 
 async function bootstrap() {
@@ -36,5 +35,7 @@ async function bootstrap() {
 
   await app.listen(parseInt(process.env.MEDIAMINE_API_PORT ?? '3002', 10));
 }
+
+console.log(process.env.NODE_ENV);
 
 bootstrap();
