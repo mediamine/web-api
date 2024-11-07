@@ -67,6 +67,11 @@ export class JournalistController {
     return this.journalistService.findOne(id);
   }
 
+  @Put('batch')
+  updateMany(@Body() updateJournalistsDto: UpdateJournalistsDto) {
+    return this.journalistService.updateMany(updateJournalistsDto);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updateJournalistDto: UpdateJournalistDto) {
     return this.journalistService.update(id, updateJournalistDto);
@@ -95,10 +100,5 @@ export class JournalistController {
   @Post('validateEmails')
   validateEmails(@Body() userApproveJournalistDto: UserApproveJournalistDto) {
     return this.journalistService.userApprove(userApproveJournalistDto);
-  }
-
-  @Put('batch')
-  updateMany(@Body() updateJournalistsDto: UpdateJournalistsDto) {
-    return this.journalistService.updateMany(updateJournalistsDto);
   }
 }
