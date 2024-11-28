@@ -22,6 +22,10 @@ export class ZerobounceService {
       return Promise.reject('Emails are undefined');
     }
 
+    if (emails.length === 0) {
+      return [];
+    }
+
     const apiKey = this.configService.get<string>(ZEROBOUNCE_API_KEY);
     if (!apiKey) {
       return Promise.reject(`${ZEROBOUNCE_API_KEY} is undefined`);

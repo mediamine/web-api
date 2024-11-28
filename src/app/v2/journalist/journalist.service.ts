@@ -862,7 +862,7 @@ export class JournalistService {
       sort = 'first_name:asc',
       name = ''
     } = validateJournalistDto;
-    const limit = 100;
+    const limit = 100; // imposed by zerobounce as max size of an email validation batch (https://www.zerobounce.net/docs/email-validation-api-quickstart/#batch_validate_emails__v2__)
     const [sortField, sortValue] = sort.split(':');
     const validSort = validateSort(sortField, sortValue);
 
@@ -909,7 +909,7 @@ export class JournalistService {
         ...(!selectAll && { uuid: { in: ids } }),
         AND: [
           /**
-           * validEmail url param is resolved into the following condition
+           * validEmail attribute is resolved into the following condition
            * 1. if true, resolve the sql query into `valid_email = 'true' OR  user_approved = 'true'`
            * 2. if false, resolve the sql query into `valid_email = 'false' AND  user_approved = 'false'`
            */
@@ -968,14 +968,27 @@ export class JournalistService {
 
     const journalistsExistingBatchResponses: Array<Array<Record<string, string | bigint | boolean>>> = [];
     for (const journalistBatch of journalistsExistingBatches) {
-      const response = await this.zerobounceService.validateBatch(journalistBatch?.map((j) => j.email));
+      const response = await this.zerobounceService.validateBatch(
+        journalistBatch?.map((j) => j.email).filter((email) => String(email).length > 0)
+      );
       this.logger.log(`response from ${this.zerobounceService.validateBatch.name} is ${JSON.stringify({ response })}`);
+
       journalistsExistingBatchResponses.push(
-        response!.email_batch.map((eb: Record<string, string>) => ({
-          ...eb,
-          mediamineId: journalistBatch?.find((j) => j.email.toLowerCase() === eb.address.toLowerCase())?.id,
-          mediamineIsValidEmail: this.zerobounceService.isEmailStatusValid(eb.status, eb.sub_status)
-        }))
+        journalistBatch.map((j) => {
+          if (!j.email) {
+            return {
+              mediamineId: j.id,
+              mediamineIsValidEmail: false
+            };
+          }
+
+          const respJ = response!.email_batch.find((eb: Record<string, string>) => j.email.toLowerCase() === eb.address.toLowerCase());
+          return {
+            ...respJ,
+            mediamineId: j.id,
+            mediamineIsValidEmail: this.zerobounceService.isEmailStatusValid(respJ.status, respJ.sub_status)
+          };
+        })
       );
     }
 
