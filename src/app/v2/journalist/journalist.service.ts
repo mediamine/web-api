@@ -999,13 +999,15 @@ export class JournalistService {
     this.logger.log(`items: ${JSON.stringify({ items })}`);
 
     for (const item of items) {
+      const { mediamineId, mediamineIsValidEmail, ...serviceResponse } = item;
       await this.prismaMediamine?.journalist.update({
         data: {
-          valid_email: Boolean(item.mediamineIsValidEmail),
-          validatedAt: DateTime.now().toISO()
+          valid_email: Boolean(mediamineIsValidEmail),
+          validatedAt: DateTime.now().toISO(),
+          service_response: JSON.stringify(serviceResponse)
         },
         where: {
-          id: Number(item.mediamineId)
+          id: Number(mediamineId)
         }
       });
     }

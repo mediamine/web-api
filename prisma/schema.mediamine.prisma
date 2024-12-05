@@ -10,28 +10,29 @@ datasource db {
 }
 
 model journalist {
-  id            BigInt                   @id @default(autoincrement())
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
-  uuid          String                   @db.VarChar
-  first_name    String                   @db.VarChar
-  last_name     String?                  @db.VarChar
-  email         String                   @db.VarChar
-  phone         String?                  @db.VarChar
-  ddi           String?                  @db.VarChar
-  mobile        String?                  @db.VarChar
-  linkedin      String?                  @db.VarChar
-  twitter       String?                  @db.VarChar
-  datasource    String?                  @db.VarChar
-  valid_email   Boolean                  @default(true) @db.Boolean
-  user_approved Boolean                  @default(false) @db.Boolean
-  validatedAt   DateTime?                @db.Timestamp()
-  enabled       Boolean                  @default(true) @db.Boolean
-  format_types  journalist_format_type[]
-  news_types    journalist_news_type[]
-  role_types    journalist_role_type[]
-  publications  journalist_publication[]
-  regions       journalist_region[]
+  id               BigInt                   @id @default(autoincrement())
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  uuid             String                   @db.VarChar
+  first_name       String                   @db.VarChar
+  last_name        String?                  @db.VarChar
+  email            String                   @db.VarChar
+  phone            String?                  @db.VarChar
+  ddi              String?                  @db.VarChar
+  mobile           String?                  @db.VarChar
+  linkedin         String?                  @db.VarChar
+  twitter          String?                  @db.VarChar
+  datasource       String?                  @db.VarChar
+  valid_email      Boolean                  @default(true) @db.Boolean
+  user_approved    Boolean                  @default(false) @db.Boolean
+  validatedAt      DateTime?                @db.Timestamp()
+  enabled          Boolean                  @default(true) @db.Boolean
+  service_response Json?                    @db.JsonB
+  format_types     journalist_format_type[]
+  news_types       journalist_news_type[]
+  role_types       journalist_role_type[]
+  publications     journalist_publication[]
+  regions          journalist_region[]
 }
 
 model format_type {
