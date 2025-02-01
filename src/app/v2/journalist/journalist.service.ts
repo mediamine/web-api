@@ -971,11 +971,12 @@ export class JournalistService {
       const response = await this.zerobounceService.validateBatch(
         journalistBatch?.map((j) => j.email).filter((email) => String(email).length > 0)
       );
-      this.logger.log(`response from ${this.zerobounceService.validateBatch.name} is ${JSON.stringify({ response })}`);
+      this.logger.debug(`response from ${this.zerobounceService.validateBatch.name} is ${JSON.stringify({ response })}`);
 
       journalistsExistingBatchResponses.push(
         journalistBatch.map((j) => {
           if (!j.email) {
+            this.logger.debug(`blank email for ${j.id} was sent, hence updating this as invalid`);
             return {
               mediamineId: j.id,
               mediamineIsValidEmail: false
@@ -983,10 +984,19 @@ export class JournalistService {
           }
 
           const respJ = response!.email_batch.find((eb: Record<string, string>) => j.email.toLowerCase() === eb.address.toLowerCase());
+
+          if (respJ) {
+            return {
+              ...respJ,
+              mediamineId: j.id,
+              mediamineIsValidEmail: this.zerobounceService.isEmailStatusValid(respJ.status, respJ.sub_status)
+            };
+          }
+
+          this.logger.debug(`response for email ${j.email} is null, hence updating this as invalid`);
           return {
-            ...respJ,
             mediamineId: j.id,
-            mediamineIsValidEmail: this.zerobounceService.isEmailStatusValid(respJ.status, respJ.sub_status)
+            mediamineIsValidEmail: false
           };
         })
       );
