@@ -7,6 +7,7 @@ import { ExportJournalistDto } from './dto/export-journalist.dto';
 import { UpdateJournalistDto } from './dto/update-journalist.dto';
 import { UpdateJournalistsDto } from './dto/update-journalists.dto';
 import { UserApproveJournalistDto } from './dto/user-approve-journalists.dto';
+import { ValidateEmailsDto } from './dto/validate-emails.dto';
 import { ValidateJournalistDto } from './dto/validate-journalist.dto';
 import { JournalistService } from './journalist.service';
 
@@ -98,7 +99,7 @@ export class JournalistController {
   }
 
   @Post('validateEmails')
-  validateEmails(@Body() userApproveJournalistDto: UserApproveJournalistDto) {
-    return this.journalistService.userApprove(userApproveJournalistDto);
+  validateEmails(@Body() validateEmailsDto: ValidateEmailsDto) {
+    return this.journalistService.validateEmails(validateEmailsDto);
   }
 }

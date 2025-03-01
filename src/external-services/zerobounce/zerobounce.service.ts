@@ -29,7 +29,9 @@ export class ZerobounceService {
 
     const apiKey = this.configService.get<string>(ZEROBOUNCE_API_KEY);
     if (!apiKey) {
-      return Promise.reject(`${ZEROBOUNCE_API_KEY} is undefined`);
+      const errorMessage = `${ZEROBOUNCE_API_KEY} is undefined`;
+      this.logger.error(errorMessage);
+      return Promise.reject(errorMessage);
     }
 
     const response = await axios.post(this.VALIDATE_BATCH_URL, {

@@ -16,6 +16,7 @@ import { ExportJournalistDto } from './dto/export-journalist.dto';
 import { UpdateJournalistDto } from './dto/update-journalist.dto';
 import { UpdateJournalistsDto } from './dto/update-journalists.dto';
 import { UserApproveJournalistDto } from './dto/user-approve-journalists.dto';
+import { ValidateEmailsDto } from './dto/validate-emails.dto';
 import { ValidateJournalistDto } from './dto/validate-journalist.dto';
 import { JournalistPublication } from './entities/journalist-publication.entity';
 import { JournalistRegion } from './entities/journalist-region.entity';
@@ -1060,9 +1061,10 @@ export class JournalistService {
     };
   }
 
-  async validateEmails(emails: Array<string>) {
-    this.logger.log(`invoked ${this.validateEmails.name} with ${JSON.stringify({ emails })}`);
+  async validateEmails(validateEmailsDto: ValidateEmailsDto) {
+    this.logger.log(`invoked ${this.validateEmails.name} with ${JSON.stringify({ validateEmailsDto })}`);
 
+    const { emails } = validateEmailsDto;
     const response = await this.zerobounceService.validateBatch(emails);
 
     const items: Array<{ email: string; mediamineIsValidEmail: boolean }> | undefined =
