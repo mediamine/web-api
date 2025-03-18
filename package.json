@@ -26,7 +26,8 @@
     "prisma:generate": "prisma generate",
     "prisma:generate:mediamine": "prisma generate --schema ./prisma/schema.mediamine.prisma",
     "prisma:db:pull": "prisma db pull",
-    "prisma:db:pull:mediamine": "prisma db pull --schema ./prisma/schema.mediamine.prisma"
+    "prisma:db:pull:mediamine": "prisma db pull --schema ./prisma/schema.mediamine.prisma",
+    "prisma:db:push:mediamine": "prisma db push --schema ./prisma/schema.mediamine.prisma"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

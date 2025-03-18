@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-bookworm AS base
 
 # Create app directory
 WORKDIR /usr/src/app
