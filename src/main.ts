@@ -36,6 +36,6 @@ async function bootstrap() {
   await app.listen(parseInt(process.env.MEDIAMINE_API_PORT ?? '3002', 10));
 }
 
-console.log(process.env.NODE_ENV);
+console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
 
 bootstrap();

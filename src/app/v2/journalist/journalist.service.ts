@@ -884,7 +884,7 @@ export class JournalistService {
       where: {
         ...(publicationIds && { id: { in: publicationIds } }),
         ...(publicationMediatypes && { publication_mediatype: { some: { mediatype: { in: publicationMediatypes } } } }),
-        ...(publicationTiers && tiers && { publication_tag: { some: { tag_id: { in: tiers?.map((t) => t.id) } } } })
+        ...(publicationTiers && tiers && { publication_tag: { some: { tag_id: { in: tiers?.map((t: { id: bigint }) => Number(t.id)) } } } })
       }
     });
 
@@ -951,7 +951,7 @@ export class JournalistService {
           regions: { some: { region_id: { in: regionIds } } }
         }),
         ...((publicationIds || publicationMediatypes || publicationTiers) && {
-          publications: { some: { publication_id: { in: publicationsWithMediatypesOrTiers?.map((p) => p.id) } } }
+          publications: { some: { publication_id: { in: publicationsWithMediatypesOrTiers?.map((p: { id: bigint }) => Number(p.id)) } } }
         })
       },
       orderBy: validSort ? [{ first_name: 'asc' }, { last_name: 'asc' }] : { first_name: 'asc' }
