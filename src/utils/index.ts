@@ -1,1 +1,1 @@
-export { validateSort } from './validate-sort';
+export { resolveSort, validateSort } from './validate-sort';

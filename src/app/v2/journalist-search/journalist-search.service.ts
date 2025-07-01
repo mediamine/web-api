@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaMediamineService, PrismaService } from 'src/db';
 import { WinstonLoggerService } from 'src/logger';
-import { validateSort } from 'src/utils';
+import { resolveSort } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateJournalistSearchDto } from './dto/create-journalist-search.dto';
 import { UpdateJournalistSearchDto } from './dto/update-journalist-search.dto';
@@ -64,7 +64,7 @@ export class JournalistSearchService {
     this.logger.log(`invoked ${this.findAll.name} with ${JSON.stringify({ username, marker, limit, sort, name })}`);
 
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const validSort = resolveSort(sortField, sortValue);
 
     const user = await this.prisma?.app_user.findFirstOrThrow({
       select: {

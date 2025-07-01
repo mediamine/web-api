@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaMediamineService } from 'src/db';
 import { WinstonLoggerService } from 'src/logger';
-import { validateSort } from 'src/utils';
+import { resolveSort } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateNewsTypeDto } from './dto/create-news-type.dto';
 import { UpdateNewsTypeDto } from './dto/update-news-type.dto';
@@ -35,7 +35,7 @@ export class NewsTypeService {
     this.logger.log(`invoked ${this.findAll.name} with ${JSON.stringify({ marker, limit, sort, name })}`);
 
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const validSort = resolveSort(sortField, sortValue);
 
     const newsTypes: Array<NewsType> = await this.prismaMediamine.news_type.findMany({
       where: {
