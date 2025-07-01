@@ -9,7 +9,7 @@ import { Region } from 'src/app/v1/region/entities/region.entity';
 import { PrismaMediamineService, PrismaService } from 'src/db';
 import { ZerobounceService } from 'src/external-services';
 import { WinstonLoggerService } from 'src/logger';
-import { validateSort } from 'src/utils';
+import { resolveSort } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateJournalistDto } from './dto/create-journalist.dto';
 import { ExportJournalistDto } from './dto/export-journalist.dto';
@@ -48,6 +48,7 @@ export class JournalistService {
       formatTypeIds = [],
       newsTypeIds = [],
       roleTypeIds = [],
+      roleToFeedMap = new Map(),
       publicationIds = [],
       regionIds = []
     } = createJournalistDto;
@@ -91,6 +92,18 @@ export class JournalistService {
                   id: rtid
                 }
               }
+            }))
+          }
+        }),
+        ...(roleToFeedMap && {
+          role_types: {
+            create: Object.entries(roleToFeedMap).map(([rtid, feedId]) => ({
+              role_type: {
+                connect: {
+                  id: Number(rtid)
+                }
+              },
+              feed_id: feedId
             }))
           }
         }),
@@ -152,7 +165,7 @@ export class JournalistService {
     );
 
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const orderBy = resolveSort(sortField, sortValue);
 
     const TIERS_DB = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5'];
 
@@ -250,7 +263,7 @@ export class JournalistService {
           uuid: { in: journalistIds }
         })
       },
-      orderBy: validSort ? [{ first_name: 'asc' }, { last_name: 'asc' }] : { first_name: 'asc' }
+      orderBy
     });
 
     const journalistsCurrentPage = journalists?.slice(Number(marker), Number(marker) + Number(limit));
@@ -395,6 +408,12 @@ export class JournalistService {
             .map((jrt) => jrt.role_type_id)
             .includes(rt.id)
         ),
+        roleToFeedMap: journalist_role_types
+          ?.filter((jrt) => jrt.journalist_id === j.id)
+          .reduce((memo: { [key: string]: string | null }, rt) => {
+            memo[String(rt.role_type_id)] = rt.feed_id ? String(rt.feed_id) : null;
+            return memo;
+          }, {}),
         publications: publications
           ?.filter((p) =>
             journalist_publications
@@ -495,6 +514,10 @@ export class JournalistService {
         }
       }
     });
+    const roleToFeedMap = journalist_role_types.reduce((memo: { [key: string]: string | null }, rt) => {
+      memo[String(rt.role_type_id)] = rt.feed_id ? String(rt.feed_id) : null;
+      return memo;
+    }, {});
 
     const journalist_publications: Array<JournalistPublication> = await this.prismaMediamine?.journalist_publication.findMany({
       where: {
@@ -558,6 +581,7 @@ export class JournalistService {
       format_types,
       news_types,
       role_types,
+      roleToFeedMap,
       publications: publications
         ?.filter((p) =>
           journalist_publications
@@ -597,6 +621,7 @@ export class JournalistService {
       formatTypeIds = [],
       newsTypeIds = [],
       roleTypeIds = [],
+      roleToFeedMap = new Map(),
       publicationIds = [],
       regionIds = []
     } = updateJournalistDto;
@@ -666,12 +691,13 @@ export class JournalistService {
           }))
         },
         role_types: {
-          create: roleTypeIds.map((rtid) => ({
+          create: Object.entries(roleToFeedMap).map(([rtid, feedId]) => ({
             role_type: {
               connect: {
-                id: rtid
+                id: Number(rtid)
               }
-            }
+            },
+            feed_id: feedId
           }))
         },
         publications: {
@@ -735,7 +761,7 @@ export class JournalistService {
     } = exportJournalistDto;
 
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const orderBy = resolveSort(sortField, sortValue);
 
     const TIERS_DB = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5'];
 
@@ -827,7 +853,7 @@ export class JournalistService {
           publications: { some: { publication_id: { in: publicationsWithMediatypesOrTiers?.map((p) => p.id) } } }
         })
       },
-      orderBy: validSort ? [{ first_name: 'asc' }, { last_name: 'asc' }] : { first_name: 'asc' }
+      orderBy
     });
 
     // TODO: add a log for more than 200 count of exported rows
@@ -865,7 +891,7 @@ export class JournalistService {
     } = validateJournalistDto;
     const limit = 100; // imposed by zerobounce as max size of an email validation batch (https://www.zerobounce.net/docs/email-validation-api-quickstart/#batch_validate_emails__v2__)
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const orderBy = resolveSort(sortField, sortValue);
 
     const TIERS_DB = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5'];
     const tiers = await this.prisma?.tag.findMany({
@@ -954,7 +980,7 @@ export class JournalistService {
           publications: { some: { publication_id: { in: publicationsWithMediatypesOrTiers?.map((p: { id: bigint }) => Number(p.id)) } } }
         })
       },
-      orderBy: validSort ? [{ first_name: 'asc' }, { last_name: 'asc' }] : { first_name: 'asc' }
+      orderBy
     });
     this.logger.log(
       `available journalists: ${JSON.stringify({
@@ -1099,7 +1125,7 @@ export class JournalistService {
     } = updateJournalistsDto;
 
     const [sortField, sortValue] = sort.split(':');
-    const validSort = validateSort(sortField, sortValue);
+    const orderBy = resolveSort(sortField, sortValue);
 
     const TIERS_DB = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5'];
 
@@ -1189,7 +1215,7 @@ export class JournalistService {
           publications: { some: { publication_id: { in: publicationsWithMediatypesOrTiers?.map((p) => p.id) } } }
         })
       },
-      orderBy: validSort ? [{ first_name: 'asc' }, { last_name: 'asc' }] : { first_name: 'asc' }
+      orderBy
     });
 
     const journalists = await this.prismaMediamine?.journalist.updateMany({

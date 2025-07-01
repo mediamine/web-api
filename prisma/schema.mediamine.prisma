@@ -84,6 +84,7 @@ model journalist_role_type {
   journalist_id BigInt     @db.BigInt
   role_type     role_type  @relation(fields: [role_type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role_type_id  BigInt     @db.BigInt
+  feed_id       BigInt?    @db.BigInt
   createdAt     DateTime   @default(now())
 
   @@id([journalist_id, role_type_id])

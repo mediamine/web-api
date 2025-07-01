@@ -12,5 +12,6 @@ export class CreateJournalistDto {
   formatTypeIds: Array<number>;
   newsTypeIds: Array<number>;
   roleTypeIds: Array<number>;
+  roleToFeedMap?: Map<number, number>;
   regionIds: Array<number>;
 }

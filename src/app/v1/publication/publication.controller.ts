@@ -22,11 +22,12 @@ export class PublicationController {
     @Query('marker') marker = '0',
     @Query('limit') limit = this.configService.get<string>(DEFAULT_PAGE_SIZE) ?? DEFAULT_PAGE_SIZE_VALUE,
     @Query('sort') sort = 'name:asc',
+    @Query('ids') ids: Array<number>,
     @Query('name') name = '',
     @Query('country') country = '',
     @Query('hasJournalist') hasJournalist = false
   ) {
-    return this.publicationService.findAll(marker, limit, sort, name, country, hasJournalist);
+    return this.publicationService.findAll(marker, limit, sort, ids, name, country, hasJournalist);
   }
 
   @Get(':id')
