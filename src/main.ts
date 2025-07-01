@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { WinstonLoggerService } from './logger/winston/winston-logger.service';
@@ -17,11 +18,12 @@ BigIntPrototype.toJSON = function () {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.MEDIAMINE_UI_HOSTNAME },
     bufferLogs: true
   });
 
+  app.set('query parser', 'extended');
   app.useLogger(new WinstonLoggerService());
 
   const swaggerConfig = new DocumentBuilder()
