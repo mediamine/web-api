@@ -721,6 +721,32 @@ export class JournalistService {
     };
   }
 
+  async archive(id: string) {
+    this.logger.log(`invoked ${this.archive.name} with ${JSON.stringify({ id })}`);
+
+    const journalistExisting = await this.prismaMediamine?.journalist.findFirstOrThrow({
+      select: {
+        id: true
+      },
+      where: {
+        uuid: id
+      }
+    });
+
+    const journalist = await this.prismaMediamine?.journalist.update({
+      data: {
+        enabled: false
+      },
+      where: {
+        id: journalistExisting?.id
+      }
+    });
+
+    return {
+      journalist
+    };
+  }
+
   async remove(id: string) {
     this.logger.log(`invoked ${this.remove.name} with ${JSON.stringify({ id })}`);
 

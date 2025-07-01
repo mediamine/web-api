@@ -78,6 +78,11 @@ export class JournalistController {
     return this.journalistService.update(id, updateJournalistDto);
   }
 
+  @Put(':id/archive')
+  archive(@Param('id') id: string) {
+    return this.journalistService.archive(id);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.journalistService.remove(id);
