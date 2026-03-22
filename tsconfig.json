@@ -18,7 +18,8 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@mediamine/app": ["./src/app/index.ts"]
+      // "@mediamine/app": ["./src/app/index.ts"]
+      "src/*": ["./src/*"]
     }
   }
 }

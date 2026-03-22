@@ -1,0 +1,50 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  output        = "../.prisma/client/mediamine.auth"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_MEDIAMINE_AUTH")
+}
+
+model app_user {
+  id                                BigInt                              @id(map: "users_pkey")
+  email                             String?                             @db.VarChar(255)
+  email_template                    String?                             @db.VarChar(20000)
+  enabled                           Boolean
+  name                              String?                             @db.VarChar(255)
+  password                          String                              @db.VarChar(100)
+  username                          String                              @unique(map: "users_username_key") @db.VarChar(255)
+  version                           Int?                                @default(0)
+  patron_id                         BigInt?
+  organisation_id                   BigInt?
+  editor                            Boolean
+  organisation                      organisation?                       @relation(fields: [organisation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_user_organisation_id")
+  report_profile                    report_profile?                     @relation(fields: [patron_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_patron_id")
+  app_user_email                    app_user_email[]
+  app_user_permission               app_user_permission[]
+  app_user_report_category_template app_user_report_category_template[]
+  app_user_report_profile           app_user_report_profile[]           @ignore
+  message                           message[]
+  newsroom_user_profile             newsroom_user_profile[]
+  organisation_user                 organisation_user[]
+  report                            report[]
+  user_audit                        user_audit[]
+  vote                              vote[]
+}
+
+model organisation {
+  id                                    BigInt                                  @id(map: "organisation_pk")
+  name                                  String                                  @db.VarChar(60)
+  contact_name                          String?                                 @db.VarChar
+  email                                 String?                                 @db.VarChar
+  disabled                              Boolean?                                @default(false)
+  phone_number                          String?                                 @db.VarChar(20)
+  app_user                              app_user[]
+  organisation_email                    organisation_email[]
+  organisation_report_category_template organisation_report_category_template[]
+  organisation_user                     organisation_user[]
+  report_profile                        report_profile[]
+}
