@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { WinstonLoggerService } from './logger/winston/winston-logger.service';
+import { rejectBrotliBody } from './utils';
 
 // TODO: to be used later to trigger an https server if required
 // import * as fs from 'fs';
@@ -22,6 +23,9 @@ async function bootstrap() {
     cors: { origin: process.env.MEDIAMINE_UI_HOSTNAME },
     bufferLogs: true
   });
+
+  // Must be registered before listen(): Nest adds its body parsers in init(), so this runs ahead of them.
+  app.use(rejectBrotliBody);
 
   app.set('query parser', 'extended');
   app.useLogger(new WinstonLoggerService());
