@@ -7,7 +7,7 @@ import { WinstonLoggerService } from 'src/logger';
 @Injectable()
 export class ZerobounceService {
   // TODO: use the zerobounce sdk
-  private VALIDATE_BATCH_URL = 'https://bulkapi.zerobounce.net/v2/validatebatch';
+  private VALIDATE_BATCH_URL = 'https://api.zerobounce.net/v2/validatebatch';
 
   constructor(
     private configService: ConfigService,
